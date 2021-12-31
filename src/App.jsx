@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import './App.css';
+import abi from "./utils/Wave.json";
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
+  const [totalWaves, setTotalWaves] = useState(0);
+  const [isMining, setIsMining] = useState(false);
+
+  const contractAddress = "0x8d8297d090b58151337dA30b58f99Fde986683d3";
+  const contractABI = abi.abi;
 
   const checkIfWalletIsConnected = () => {
     const { ethereum } = window;
@@ -45,6 +51,38 @@ export default function App() {
       })
   }
 
+  const wave = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        let count = await wavePortalContract.getTotalWaves();
+        setTotalWaves(count.toNumber());
+        console.log("Total wave count is... ", count.toNumber());
+
+        const waveTxn = await wavePortalContract.wave();
+        setIsMining(true);
+        console.log("Mining...", waveTxn.hash);
+
+        await waveTxn.wait();
+        setIsMining(false);
+        console.log("Mined! See transaction hash above ⛏");
+
+        count = await wavePortalContract.getTotalWaves();
+        setTotalWaves(count.toNumber());
+        console.log("Now total wave count is... ", count.toNumber());
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error)
+    }
+}
+
   useEffect(() => {
     checkIfWalletIsConnected();
   }, [])
@@ -60,17 +98,36 @@ export default function App() {
         </div>
 
         <div className="bio">
-          I'm exploring Web3 & other shtuff. Connect your Ethereum wallet to holler at me! <a href="https://nikhilthota.com/">Check out my other stuff here.</a>
+          I'm exploring Web3 & other shtuff. Connect your Ethereum wallet on Rinkeby to holler at me! <a href="https://nikhilthota.com/">Check out my other stuff here.</a>
         </div>
 
-        <button className="waveButton" onClick={null}>
+        <button 
+          className="waveButton" 
+          onClick={wave}>
           Wave at Me 👋🏽
         </button>
 
         {!currentAccount && (
-          <button className="waveButton" onClick={connectWallet}>
+          <button 
+            className="waveButton" 
+            onClick={connectWallet}>
             Connect Wallet 💳
           </button>
+        )}
+
+        {totalWaves === 0 
+        ? 
+          <div className="totalWaves bio">
+            Wave at me to see total # of waves!
+          </div>
+        : 
+          <div className="totalWaves bio">
+            So far, I've gotten {totalWaves} waves!
+          </div>
+        }
+
+        {isMining && (
+          <img class="gif" src="./src/assets/mining.gif" />
         )}
       </div>
     </div>

@@ -41,3 +41,9 @@ a {
   margin-bottom: 20px;
   align-self: center;
 }
+
+.gif {
+  max-width: 200px;
+  margin-top: 20px;
+  align-self: center;
+}
