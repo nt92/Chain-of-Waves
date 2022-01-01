@@ -22,13 +22,13 @@ a {
   font-weight: 600;
 }
 
-.bio {
+.mainText {
   text-align: center;
   color: gray;
   margin-top: 16px;
 }
 
-.waveButton {
+.button {
   cursor: pointer;
   margin-top: 16px;
   padding: 8px;
@@ -42,7 +42,7 @@ a {
   align-self: center;
 }
 
-.gif {
+.miningGif {
   max-width: 200px;
   margin-top: 20px;
   align-self: center;

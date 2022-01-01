@@ -15,10 +15,10 @@ export default function App() {
     const { ethereum } = window;
 
     if (!ethereum) {
-      console.log("Make sure you have metamask!");
+      console.log("Make sure you have Metamask!");
       return;
     } else {
-      console.log("We have the ethereum object", ethereum);
+      console.log("We have the ethereum object: ", ethereum);
     }
 
     ethereum
@@ -27,10 +27,10 @@ export default function App() {
         console.log(accounts);
         if (accounts.length !== 0) {
           const account = accounts[0];
-          console.log("Found an authorized account:", accounts);
+          console.log("Found an authorized account: ", accounts);
           setCurrentAccount(account)
         } else {
-          console.log("No authorized account found")
+          console.log("No authorized account found :{")
         }
       })
   }
@@ -39,7 +39,7 @@ export default function App() {
     const { ethereum } = window;
 
     if (!ethereum) {
-      alert("Get MetaMask, nerd!");
+      alert("Get Metamask, nerd!");
       return;
     }
 
@@ -97,37 +97,41 @@ export default function App() {
           Hey, I'm Nikhil! 🧘🏽‍♂️
         </div>
 
-        <div className="bio">
+        <div className="mainText">
           I'm exploring Web3 & other shtuff. Connect your Ethereum wallet on Rinkeby to holler at me! <a href="https://nikhilthota.com/">Check out my other stuff here.</a>
         </div>
 
-        <button 
-          className="waveButton" 
-          onClick={wave}>
-          Wave at Me 👋🏽
-        </button>
-
-        {!currentAccount && (
-          <button 
-            className="waveButton" 
-            onClick={connectWallet}>
-            Connect Wallet 💳
-          </button>
-        )}
+        {currentAccount !== null
+          ? 
+            <button 
+              className="button" 
+              onClick={wave}>
+              Wave at Me 👋🏽
+            </button>
+          :
+            <button 
+              className="button" 
+              onClick={connectWallet}>
+              Connect Wallet 💳
+            </button>
+        }
 
         {totalWaves === 0 
-        ? 
-          <div className="totalWaves bio">
-            Wave at me to see total # of waves!
-          </div>
-        : 
-          <div className="totalWaves bio">
-            So far, I've gotten {totalWaves} waves!
-          </div>
+          ? 
+            <div className="totalWaves mainText">
+              Wave at me to see total # of waves!
+            </div>
+          : 
+            <div className="totalWaves mainText">
+              So far, I've gotten {totalWaves} waves!
+            </div>
         }
 
         {isMining && (
-          <img class="gif" src="./src/assets/mining.gif" />
+          <div class="miningGif">
+            <p className="mainText">⛏ Mining...</p>
+            <img src="./src/assets/mining.gif" />
+          </div>
         )}
       </div>
     </div>
