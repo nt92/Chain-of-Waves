@@ -2,7 +2,7 @@
 
 ## What is this?
 
-This is a fun project that I'm working on to ramp up on Web3 development. It's essentially a website where people can "wave" at me and have these waves recorded on the blockchain (specifically the Rinkeby Eth testnet).
+This is a fun project that I'm working on to ramp up on Web3 development. It's essentially a website where people can "wave" at me and have these waves recorded on the blockchain (specifically the Rinkeby Eth testnet). This is based on a project from [Buildspace](https://buildspace.so/).
 
 As this was my first Web3 project, there were a *lot* of learnings along the way — here's a rough order of how things got to the way they are:
 
@@ -29,9 +29,9 @@ https://user-images.githubusercontent.com/10099203/147828969-4abd60f3-e415-4686-
 
 ## TODO
 
-I've still got a few more things I want to add before I finish up this project and am drawing on [Buildspace](https://buildspace.so/) for their suggestions:
+I've still got a few more things I want to add before I finish up this project:
 * Store structured messages from users when they wave
 * Display the number of times each address has waved
-* (If connected to Metamask) show the initial information
+  * Update contract to return the relevant map
 * Fund a contract to randomly send a waver some Eth
 * Explore defensive mechanisms to prevent spam

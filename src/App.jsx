@@ -30,9 +30,27 @@ export default function App() {
           console.log("Found an authorized account: ", accounts);
           setCurrentAccount(account)
         } else {
-          console.log("No authorized account found :{")
+          console.log("No authorized account found :(")
         }
       })
+  }
+
+  const initializeData = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        let count = await wavePortalContract.getTotalWaves();
+        setTotalWaves(count.toNumber());
+        console.log("Total wave count is... ", count.toNumber());
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const connectWallet = async () => {
@@ -85,6 +103,7 @@ export default function App() {
 
   useEffect(() => {
     checkIfWalletIsConnected();
+    initializeData();
   }, [])
   
   return (
@@ -92,7 +111,7 @@ export default function App() {
 
       <div className="dataContainer">
         <img 
-          class ="nikhil" src="https://nikhilthota.com/images/nikhil-v2-fade-small.png"/>
+          class ="nikhil" src="https://nikhilthota.com/images/nikhil-v2-fade-small.png" />
         <div className="header">
           Hey, I'm Nikhil! 🧘🏽‍♂️
         </div>
