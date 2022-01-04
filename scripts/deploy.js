@@ -5,7 +5,7 @@ const main = async () => {
     console.log('Deploying contracts with account: ', deployer.address);
     console.log('Account balance: ', accountBalance.toString());
   
-    const Token = await hre.ethers.getContractFactory('Wave');
+    const Token = await hre.ethers.getContractFactory('WaveChain');
     const portal = await Token.deploy();
     await portal.deployed();
   
