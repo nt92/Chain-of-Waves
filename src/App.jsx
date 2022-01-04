@@ -6,13 +6,14 @@ import abi from "./utils/WaveChain.json";
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [totalWaves, setTotalWaves] = useState(0);
+  const [userWaves, setUserWaves] = useState(0);
   const [allWaves, setAllWaves] = useState([]);
   const [isMining, setIsMining] = useState(false);
 
   const contractAddress = "0xacb8DE7370D017d04f3999e93Cc8A088fD439169";
   const contractABI = abi.abi;
 
-  const checkIfWalletIsConnected = () => {
+  const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
 
     if (!ethereum) {
@@ -29,7 +30,9 @@ export default function App() {
         if (accounts.length !== 0) {
           const account = accounts[0];
           console.log("Found an authorized account: ", accounts);
-          setCurrentAccount(account)
+          setCurrentAccount(account);
+          
+          initializeData();
         } else {
           console.log("No authorized account found :(")
         }
@@ -47,7 +50,21 @@ export default function App() {
 
         let count = await wavePortalContract.getTotalWaves();
         setTotalWaves(count.toNumber());
-        console.log("Total wave count is... ", count.toNumber());
+
+        const waves = await wavePortalContract.getAllWaves();
+        let wavesCleaned = [];
+        waves.forEach(wave => {
+          wavesCleaned.push({
+            address: wave.waver,
+            timestamp: new Date(wave.timestamp * 1000),
+            message: wave.message
+          });
+        });
+
+        setAllWaves(wavesCleaned);
+
+        let userWaveCount = await wavePortalContract.getWaveCount(await signer.getAddress());
+        setUserWaves(userWaveCount.toNumber())
       }
     } catch (error) {
       console.log(error)
@@ -83,7 +100,9 @@ export default function App() {
         setTotalWaves(count.toNumber());
         console.log("Total wave count is... ", count.toNumber());
 
-        const waveTxn = await wavePortalContract.wave();
+        // TODO create a popup for user input of metadata
+        // https://minutemailer.github.io/react-popup/
+        const waveTxn = await wavePortalContract.wave("test");
         setIsMining(true);
         console.log("Mining...", waveTxn.hash);
 
@@ -92,8 +111,7 @@ export default function App() {
         console.log("Mined! See transaction hash above ⛏");
 
         count = await wavePortalContract.getTotalWaves();
-        setTotalWaves(count.toNumber());
-        console.log("Now total wave count is... ", count.toNumber());
+        initializeData();
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -102,38 +120,8 @@ export default function App() {
     }
   }
 
-  const getAllWaves = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
-
-        const waves = await wavePortalContract.getAllWaves();
-
-        let wavesCleaned = [];
-        waves.forEach(wave => {
-          wavesCleaned.push({
-            address: wave.waver,
-            timestamp: new Date(wave.timestamp * 1000),
-            message: wave.message
-          });
-        });
-
-        setAllWaves(wavesCleaned);
-      } else {
-        console.log("Ethereum object doesn't exist!")
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   useEffect(() => {
     checkIfWalletIsConnected();
-    initializeData();
   }, [])
   
   return (
@@ -172,7 +160,7 @@ export default function App() {
             </div>
           : 
             <div className="totalWaves mainText">
-              So far, I've gotten {totalWaves} waves!
+              So far, I've gotten {totalWaves} waves, and you've waved {userWaves} time(s)!
             </div>
         }
 
@@ -182,6 +170,18 @@ export default function App() {
             <img src="./src/assets/mining.gif" />
           </div>
         )}
+
+        {/*
+        TODO possibly build a table for data of waves
+        {allWaves.map((wave, index) => {
+          return (
+            <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
+              <div>Address: {wave.address}</div>
+              <div>Time: {wave.timestamp.toString()}</div>
+              <div>Message: {wave.message}</div>
+            </div>)
+        })}
+        */}
       </div>
     </div>
   );

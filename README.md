@@ -37,8 +37,5 @@ If you want to interact with the [live site](chain-of-waves.nikhilthota.repl.co/
 ## TODO
 
 I've still got a few more things I want to add before I finish up this project:
-* Store structured messages from users when they wave
-* Display the number of times each address has waved
-  * Update contract to return the relevant map
 * Fund a contract to randomly send a waver some Eth
 * Explore defensive mechanisms to prevent spam
