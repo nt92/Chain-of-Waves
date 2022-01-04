@@ -5,7 +5,6 @@ import abi from "./utils/WaveChain.json";
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
-  const [totalWaves, setTotalWaves] = useState(0);
   const [userWaves, setUserWaves] = useState(0);
   const [allWaves, setAllWaves] = useState([]);
   const [isMining, setIsMining] = useState(false);
@@ -47,9 +46,6 @@ export default function App() {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
-
-        let count = await wavePortalContract.getTotalWaves();
-        setTotalWaves(count.toNumber());
 
         const waves = await wavePortalContract.getAllWaves();
         let wavesCleaned = [];
@@ -96,10 +92,6 @@ export default function App() {
         const signer = provider.getSigner();
         const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        let count = await wavePortalContract.getTotalWaves();
-        setTotalWaves(count.toNumber());
-        console.log("Total wave count is... ", count.toNumber());
-
         // TODO create a popup for user input of metadata
         // https://minutemailer.github.io/react-popup/
         const waveTxn = await wavePortalContract.wave("test");
@@ -110,7 +102,6 @@ export default function App() {
         setIsMining(false);
         console.log("Mined! See transaction hash above ⛏");
 
-        count = await wavePortalContract.getTotalWaves();
         initializeData();
       } else {
         console.log("Ethereum object doesn't exist!");
@@ -124,6 +115,7 @@ export default function App() {
     checkIfWalletIsConnected();
   }, [])
   
+  console.log(waveCount)
   return (
     <div className="mainContainer">
 
@@ -153,14 +145,14 @@ export default function App() {
             </button>
         }
 
-        {totalWaves === 0 
+        {allWaves.length === 0 
           ? 
             <div className="totalWaves mainText">
               Wave at me to see total # of waves!
             </div>
           : 
             <div className="totalWaves mainText">
-              So far, I've gotten {totalWaves} waves, and you've waved {userWaves} time(s)!
+              So far, I've gotten {allWaves.length} waves, and you've waved {userWaves} time(s)!
             </div>
         }
 
